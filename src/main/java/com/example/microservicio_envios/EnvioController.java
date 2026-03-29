@@ -59,12 +59,21 @@ public class EnvioController {
 
     // 4. Registrar un nuevo envío
     @GetMapping(path = "/envios/registrar/{id}/{cliente}/{estado}/{ubicacion}")
-    public Envio registrarEnvio(
+    public Object registrarEnvio(
             @PathVariable("id") int id,
             @PathVariable("cliente") String cliente,
             @PathVariable("estado") String estado,
             @PathVariable("ubicacion") String ubicacion) {
 
+        // Comprobar si ya existe un envío con ese ID
+        for (Envio envio : envios) {
+            if (envio.getId() == id) {
+                // Retorna un mensaje de error si el ID ya está ocupado
+                return "{\"error\": \"Ya existe un envío registrado con el ID " + id + ".\"}";
+            }
+        }
+
+        // Si pasa la validación, creamos y guardamos el nuevo envío
         List<Producto> productosBasicos = Arrays.asList(new Producto("P99", "Producto Genérico Mascotas"));
         Envio nuevoEnvio = new Envio(id, cliente, estado, ubicacion, productosBasicos);
 
